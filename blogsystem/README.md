@@ -4,7 +4,6 @@ A complete, ready-to-use blog system package for **Tontoo Code**. This package a
 
 ![Tontoo Blog](https://img.shields.io/badge/Tontoo-BlogSystem-blue?style=for-the-badge)
 ![Version](https://img.shields.io/badge/version-1.0.0-green?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge)
 
 ## Features
 
