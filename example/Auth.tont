@@ -1,0 +1,84 @@
+// Authentication System Core Module
+dat: AuthSystem                     // Module identifier
+type: Authentication                // Module category
+
+// Load required dependencies
+load: 
+{
+  "mysql-connector/MySQLUtils"      // For connection pooling
+  "crypto-utils/Hashing"            // For secure password hashing
+}
+
+// System Configuration Constants
+VB: MIN_PASSWORD_LENGTH: "8"        // Enforced password policy
+VB: SESSION_TIMEOUT: "3600"         // Session duration in seconds
+
+// Initialization function
+:start: init
+console.log: "Initializing AuthSystem v1.1.0"
+
+// Database connection configuration
+mysql: "authDB"
+{
+  "host": "$DB_HOST",               // From config or environment
+  "port": "$DB_PORT",               // Default: 3306
+  "user": "$DB_USER",               // Database username
+  "password": "$DB_PASS",           // Database password
+  "database": "$DB_NAME",           // Database name
+  "pool": "true",                   // Enable connection pooling
+  "pool_size": "10"                 // Max connections
+}
+
+// Database schema setup
+:start: setupTables
+// Using MySQLUtils dependency to create tables
+const tables = ${MySQLUtils.createTables}("authDB", [
+  {
+    name: "users",                  // Users table
+    columns: [
+      "id INT AUTO_INCREMENT PRIMARY KEY",
+      "username VARCHAR(255) UNIQUE NOT NULL",
+      "password_hash VARCHAR(255) NOT NULL",
+      "email VARCHAR(255) UNIQUE",
+      "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+      "last_login TIMESTAMP"        // Last login tracking
+    ]
+  },
+  {
+    name: "sessions",               // Active sessions table
+    columns: [
+      "session_id VARCHAR(255) PRIMARY KEY",
+      "user_id INT NOT NULL",
+      "expires_at DATETIME NOT NULL",
+      "FOREIGN KEY (user_id) REFERENCES users(id)"
+    ]
+  }
+]);
+console.log: "Created ${tables.length} tables"
+:end:
+
+// User registration with validation
+:start: registerUser
+const username = "$USERNAME";       // From API request
+const password = "$PASSWORD";
+const email = "$EMAIL";
+
+// Password policy enforcement
+if (password.length < ${MIN_PASSWORD_LENGTH}) {
+  throw new Error("Password must be at least ${MIN_PASSWORD_LENGTH} characters");
+}
+
+// Secure hashing with salt from environment
+const hash = ${Hashing.sha256}(password + "${SECRET_SALT}");
+
+try {
+  // Parameterized query to prevent SQL injection
+  const [result] = await ${authDB}_query(
+    "INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)",
+    [username, hash, email]
+  );
+  return { success: true, userId: result.insertId };
+} catch (e) {
+  throw new Error("Registration failed: " + e.message);
+}
+:end:
