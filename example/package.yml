@@ -1,36 +1,24 @@
-# Authentication System Package Manifest
-name: "auth-system"                 # Package identifier
-version: "1.1.0"                    # Semantic version (major.minor.patch)
-description: "Complete user authentication system with MySQL backend and React frontend"
-author: "tontoo-dev-team"           # Package maintainer
-license: "MIT"                      # Software license
+name: example
+version: 1.2.0
+description: Complete email service with SMTP support, templates, and queue management
+author: arlomu
+license: MIT
+repository: https://github.com/tontoo-packages/example.git
 
-# Required dependencies
 dependencies:
-  - "mysql-connector@2.3.0"         # Database connection handler
-  - "crypto-utils@1.2.0"            # Password hashing utilities
+  - nodemailer: "^6.9.0"
+  - mustache: "^4.2.0"
 
-# Installation/uninstallation hooks
 scripts:
-  postinstall: "bash install-deps.sh && echo 'Installation completed'"  # Runs after install
-  preuninstall: "echo 'Removing auth system...'"  # Runs before uninstall
+  postinstall: "npm install nodemailer mustache"
+  preuninstall: "echo 'Cleaning up email service...'"
 
-# Configuration schema for user customization
-config_schema:
-  db_host:                          # Database host configuration
-    type: string                    # Expected data type
-    default: "localhost"            # Default value if not specified
-    description: "MySQL server host address"
-  min_password_length:              # Security policy
-    type: number
-    default: 8
-    min: 6
-    max: 128
-
-# Frontend requirements (automatically installed)
-frontend:
-  requires:
-    - "react@^18.2.0"              # Frontend framework
-    - "axios@^1.3.0"               # HTTP client
-  styles:
-    - "bootstrap@5.2.3"            # CSS framework
+tontoo:
+  minVersion: "1.8.0"
+  type: "service"
+  
+keywords:
+  - email
+  - smtp
+  - templates
+  - notifications
