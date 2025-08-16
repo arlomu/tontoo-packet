@@ -1,0 +1,53 @@
+dat: EmailService
+type: Service
+
+# Email service configuration
+VB: SMTP_HOST: "smtp.gmail.com"
+VB: SMTP_PORT: "587"
+VB: SMTP_SECURE: "false"
+VB: SMTP_USER: ""
+VB: SMTP_PASS: ""
+VB: EMAIL_FROM: "noreply@example.com"
+VB: EMAIL_QUEUE_SIZE: "100"
+
+# Initialize email service
+:start: initEmailService
+console.log: "Initializing Email Service v1.2.0..."
+copyFile
+{
+  "from": "tont-packets/email-service/config/smtp.json",
+  "to": "config/smtp.json"
+}
+console.log: "Email service configuration copied"
+console.log: "Email templates available in templates/ directory"
+:end:
+
+# Send simple email function
+:start: sendEmail
+console.log: "Email sending function registered"
+console.log: "Use: callFunction sendEmail with recipient, subject, body"
+:end:
+
+# Send templated email function  
+:start: sendTemplatedEmail
+console.log: "Templated email function registered"
+console.log: "Use: callFunction sendTemplatedEmail with template, recipient, data"
+:end:
+
+# Email queue management
+:start: processEmailQueue
+console.log: "Processing email queue..."
+console.log: "Queue size: $EMAIL_QUEUE_SIZE emails maximum"
+:end:
+
+# Validate email address
+:start: validateEmail
+console.log: "Email validation function ready"
+:end:
+
+# Email service status check
+:start: emailServiceStatus
+console.log: "Email Service Status: Active"
+console.log: "SMTP Host: $SMTP_HOST:$SMTP_PORT"
+console.log: "Default sender: $EMAIL_FROM"
+:end:
