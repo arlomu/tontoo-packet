@@ -1,6 +1,0 @@
-dat: package
-type: Extra
-
-VB: TEST: "This is a Exaple"
-
-console.log: "$TEST"
